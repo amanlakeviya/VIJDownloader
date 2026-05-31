@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+<title>VIJDownloader — Download Any Video Free</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --bg:#05050d; --s1:#0a0a18; --s2:#0f0f22; --card:#111128;
+  --border:rgba(255,255,255,0.08); --gold:#d4a843; --gold2:#f5cc6a;
+  --goldDim:#8a6b22; --glow:rgba(212,168,67,0.2);
+  --text:#eeeae0; --muted:#6b6580; --dim:#3a3550;
+  --yt:#ff3b3b; --ig:#d62976; --tk:#00e5d4; --fb:#2196f3;
+}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+html{
+  scroll-behavior:smooth;
+}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* 3D Canvas Background */
+#three-canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  display:block;
+}
+/* Mesh blur effects (still enhance depth) */
+.mesh{
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:1;
+  filter:blur(120px);
+}
+.m1{
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle,rgba(212,168,67,.08),transparent 70%);
+  top:-200px;
+  left:-200px;
+  animation:fm 15s ease-in-out infinite alternate;
+}
+.m2{
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle,rgba(80,60,200,.06),transparent 70%);
+  bottom:-150px;
+  right:-150px;
+  animation:fm 18s ease-in-out infinite alternate-reverse;
+}
+.m3{
+  width:300px;
+  height:300px;
+  background:radial-gradient(circle,rgba(0,200,180,.04),transparent 70%);
+  top:45%;
+  left:55%;
+  animation:fm 12s ease-in-out infinite alternate;
+}
+@keyframes fm{
+  to{transform:translate(60px,50px) scale(1.15);}
+}
+/* Nav */
+nav{
+  position:sticky;
+  top:0;
+  z-index:200;
+  background:rgba(5,5,13,.82);
+  backdrop-filter:blur(24px) saturate(160%);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:1140px;
+  margin:0 auto;
+  padding:0 18px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:'Syne',sans-serif;
+  font-size:19px;
+  font-weight:800;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.logo-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--goldDim));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  color:#050510;
+  box-shadow:0 4px 16px rgba(212,168,67,.35);
+}
+.logo-text{
+  color:var(--text);
+}
+.logo-text span{
+  color:var(--gold);
+}
+.nav-live{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 12px;
+  border-radius:100px;
+  background:rgba(212,168,67,.08);
+  border:1px solid rgba(212,168,67,.18);
+  font-size:10px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:600;
+}
+.ndot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#4caf50;
+  animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:.25;}
+}
+/* Hero compact mobile */
+.hero{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  padding:40px 18px 30px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:600;
+  margin-bottom:20px;
+  padding:6px 16px;
+  border:1px solid rgba(212,168,67,.22);
+  border-radius:100px;
+  background:rgba(212,168,67,.06);
+  animation:up .7s ease both;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(36px,8vw,72px);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-2px;
+  margin-bottom:16px;
+  animation:up .7s .1s ease both;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(90deg,var(--gold),var(--gold2),#ffd875,var(--gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  background-size:300%;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{
+  to{background-position:300% center;}
+}
+.hero-sub{
+  font-size:14px;
+  color:var(--muted);
+  max-width:440px;
+  margin:0 auto 24px;
+  line-height:1.7;
+  animation:up .7s .2s ease both;
+}
+@keyframes up{
+  from{opacity:0;transform:translateY(22px);}
+  to{opacity:1;transform:translateY(0);}
+}
+/* stats row */
+.stats{
+  display:flex;
+  justify-content:center;
+  gap:0;
+  margin:0 auto 28px;
+  max-width:480px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  animation:up .7s .25s ease both;
+}
+.stat{
+  flex:1;
+  padding:12px 6px;
+  text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat:last-child{
+  border-right:none;
+}
+.stat-n{
+  font-family:'Syne',sans-serif;
+  font-size:18px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.stat-l{
+  font-size:8px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-top:3px;
+}
+/* platform badges */
+.plat-row{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:28px;
+  animation:up .7s .3s ease both;
+}
+.pb{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:100px;
+  font-size:11px;
+  font-weight:600;
+  border:1px solid;
+  transition:transform .2s,box-shadow .2s;
+  cursor:default;
+}
+.pb.yt{color:var(--yt);border-color:rgba(255,59,59,.3);background:rgba(255,59,59,.07);}
+.pb.ig{color:var(--ig);border-color:rgba(214,41,118,.3);background:rgba(214,41,118,.07);}
+.pb.tk{color:var(--tk);border-color:rgba(0,229,212,.3);background:rgba(0,229,212,.07);}
+.pb.fb{color:var(--fb);border-color:rgba(33,150,243,.3);background:rgba(33,150,243,.07);}
+/* main download card */
+.dl-wrap{
+  max-width:680px;
+  margin:0 auto;
+  animation:up .7s .4s ease both;
+}
+.dl-card{
+  background:linear-gradient(145deg,rgba(17,17,40,.92),rgba(8,8,20,.96));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+  padding:8px;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(212,168,67,.04);
+  backdrop-filter:blur(20px);
+}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  padding:6px 6px 8px;
+}
+.tab{
+  padding:10px 4px 8px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  cursor:pointer;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.3px;
+  transition:all .25s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  color:var(--muted);
+}
+.tab i{
+  font-size:18px;
+}
+.tab.yt.on{color:var(--yt);border-color:rgba(255,59,59,.45);background:rgba(255,59,59,.1);box-shadow:0 4px 20px rgba(255,59,59,.15);}
+.tab.ig.on{color:var(--ig);border-color:rgba(214,41,118,.45);background:rgba(214,41,118,.1);}
+.tab.tk.on{color:var(--tk);border-color:rgba(0,229,212,.45);background:rgba(0,229,212,.1);}
+.tab.fb.on{color:var(--fb);border-color:rgba(33,150,243,.45);background:rgba(33,150,243,.1);}
+.irow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px 6px 16px;
+}
+.iicon{
+  color:var(--muted);
+  font-size:14px;
+  flex-shrink:0;
+}
+#url{
+  flex:1;
+  background:none;
+  border:none;
+  outline:none;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px;
+  color:var(--text);
+  padding:12px 0;
+  caret-color:var(--gold);
+}
+#url::placeholder{
+  color:var(--dim);
+}
+#xbtn{
+  display:none;
+  flex-shrink:0;
+  align-items:center;
+  gap:4px;
+  background:rgba(255,70,70,.1);
+  border:1px solid rgba(255,70,70,.25);
+  border-radius:10px;
+  color:#ff7070;
+  cursor:pointer;
+  font-size:10px;
+  font-weight:700;
+  padding:6px 10px;
+  transition:all .2s;
+}
+.brow{
+  display:flex;
+  gap:8px;
+  padding:6px 8px 10px;
+}
+.bpaste{
+  flex:1;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  color:var(--muted);
+  padding:12px 8px;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:10px;
+  letter-spacing:1.2px;
+  font-weight:700;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.bdl{
+  flex:2.5;
+  background:linear-gradient(135deg,var(--gold) 0%,#e8b840 50%,#c49030 100%);
+  color:#050510;
+  border:none;
+  padding:12px 16px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:700;
+  font-family:'Syne',sans-serif;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 8px 28px rgba(212,168,67,.32);
+}
+.msg{
+  margin-top:12px;
+  padding:12px 16px;
+  border-radius:16px;
+  font-size:12px;
+  display:none;
+  align-items:flex-start;
+  gap:10px;
+  line-height:1.5;
+}
+.msg.tip{background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.2);color:rgba(230,190,90,.95);}
+.msg.err{background:rgba(255,70,70,.07);border:1px solid rgba(255,70,70,.2);color:#ff9090;}
+/* Founder section */
+.founder-sec{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  margin:40px auto 0;
+  padding:0 18px;
+}
+.founder-card{
+  background:linear-gradient(135deg,rgba(15,15,34,.96),rgba(8,8,20,.99));
+  border:1px solid rgba(212,168,67,.2);
+  border-radius:28px;
+  padding:28px 20px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  flex-wrap:wrap;
+  justify-content:center;
+  box-shadow:0 40px 90px rgba(0,0,0,.45),0 0 70px rgba(212,168,67,.04);
+  position:relative;
+  overflow:hidden;
+}
+.founder-card::after{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),rgba(212,168,67,.3),transparent);
+}
+.f-img-outer{
+  flex-shrink:0;
+  position:relative;
+  width:100px;
+  height:100px;
+}
+.f-ring{
+  position:absolute;
+  inset:-5px;
+  border-radius:50%;
+  background:conic-gradient(var(--gold),var(--gold2),#ffd875,var(--goldDim),var(--gold));
+  animation:spin 6s linear infinite;
+}
+.f-ring-mask{
+  position:absolute;
+  inset:3px;
+  border-radius:50%;
+  background:var(--bg);
+}
+.f-img{
+  position:absolute;
+  inset:5px;
+  border-radius:50%;
+  overflow:hidden;
+  background:var(--s2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.f-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+.f-info{
+  flex:1;
+  text-align:center;
+}
+.f-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.f-name{
+  font-family:'Syne',sans-serif;
+  font-size:26px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:8px;
+  letter-spacing:-0.5px;
+}
+.f-desc{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.65;
+  max-width:320px;
+  margin:0 auto 16px;
+}
+.f-badges{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.fbadge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 12px;
+  border-radius:100px;
+  font-size:10px;
+  font-weight:600;
+}
+.fbadge.g1{
+  background:rgba(212,168,67,.1);
+  border:1px solid rgba(212,168,67,.25);
+  color:var(--gold);
+}
+.fbadge.g2{
+  background:rgba(76,175,80,.1);
+  border:1px solid rgba(76,175,80,.25);
+  color:#80c780;
+}
+/* counters */
+.ctr-sec{
+  position:relative;
+  z-index:2;
+  max-width:900px;
+  margin:50px auto 0;
+  padding:0 18px;
+}
+.ctr-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.cc{
+  background:linear-gradient(145deg,var(--card),var(--s2));
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:20px 12px;
+  text-align:center;
+  transition:border-color .3s,transform .3s;
+}
+.cc-icon{
+  font-size:26px;
+  margin-bottom:8px;
+}
+.cc-num{
+  font-family:'Syne',sans-serif;
+  font-size:26px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.cc-lbl{
+  font-size:9px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-top:5px;
+}
+/* steps */
+.steps-sec{
+  position:relative;
+  z-index:2;
+  max-width:860px;
+  margin:60px auto 0;
+  padding:0 18px;
+  text-align:center;
+}
+.sec-eye{
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:600;
+  margin-bottom:12px;
+}
+.sec-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(22px,5vw,36px);
+  font-weight:800;
+  margin-bottom:32px;
+  letter-spacing:-1px;
+}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+}
+.step{
+  background:linear-gradient(145deg,var(--card),rgba(8,8,20,.85));
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:28px 16px;
+  text-align:center;
+  transition:transform .2s, border-color .2s;
+}
+.step-num{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg,rgba(212,168,67,.15),rgba(212,168,67,.04));
+  border:1px solid rgba(212,168,67,.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 14px;
+  font-family:'Syne',sans-serif;
+  font-size:16px;
+  font-weight:800;
+  color:var(--gold);
+}
+.step-icon{
+  font-size:28px;
+  margin-bottom:12px;
+}
+.step h3{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.step p{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+/* FAQ */
+.faq-sec{
+  position:relative;
+  z-index:2;
+  max-width:660px;
+  margin:60px auto 0;
+  padding:0 18px;
+  text-align:center;
+}
+.fi{
+  background:linear-gradient(145deg,var(--card),rgba(8,8,20,.85));
+  border:1px solid var(--border);
+  border-radius:16px;
+  margin-bottom:10px;
+  text-align:left;
+}
+.fq{
+  padding:16px 18px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  font-weight:600;
+}
+.fq-ico{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(212,168,67,.07);
+  border:1px solid rgba(212,168,67,.14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  transition:all .3s;
+}
+.fi.open .fq-ico{
+  transform:rotate(180deg);
+  background:rgba(212,168,67,.14);
+  color:var(--gold);
+}
+.fa2{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.7;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .4s ease,padding .4s;
+  padding:0 18px;
+}
+.fi.open .fa2{
+  max-height:180px;
+  padding:0 18px 16px;
+}
+/* footer */
+footer{
+  position:relative;
+  z-index:2;
+  margin-top:70px;
+  border-top:1px solid var(--border);
+  padding:40px 18px 30px;
+}
+.footer-inner{
+  max-width:1000px;
+  margin:0 auto;
+}
+.footer-top{
+  display:flex;
+  flex-wrap:wrap;
+  gap:28px;
+  justify-content:space-between;
+  margin-bottom:32px;
+}
+.footer-logo{
+  font-family:'Syne',sans-serif;
+  font-size:19px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.footer-logo .li{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  background:linear-gradient(135deg,var(--gold),var(--goldDim));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  color:#050510;
+}
+.footer-tagline{
+  font-size:11px;
+  color:var(--muted);
+  max-width:200px;
+  line-height:1.6;
+  margin-top:6px;
+}
+.flinks h4{
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+.flinks ul{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.flinks a{
+  font-size:11px;
+  color:var(--dim);
+  text-decoration:none;
+}
+.flinks a:hover{
+  color:var(--gold);
+}
+.footer-bottom{
+  border-top:1px solid var(--border);
+  padding-top:20px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  font-size:10px;
+  color:var(--muted);
+}
+.funding-badge{
+  background:rgba(212,168,67,.08);
+  border:1px solid rgba(212,168,67,.25);
+  border-radius:100px;
+  padding:4px 12px;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.5px;
+  color:var(--gold);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+@media (min-width:640px){
+  .ctr-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+  .founder-card{
+    flex-wrap:nowrap;
+    text-align:left;
+    padding:32px;
+  }
+  .f-info{
+    text-align:left;
+  }
+  .f-desc{
+    margin:0 0 16px 0;
+  }
+  .f-badges{
+    justify-content:flex-start;
+  }
+  .steps-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+@media (max-width:460px){
+  .tabs{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .tab{
+    padding:8px;
+  }
+  .founder-card{
+    padding:22px 16px;
+  }
+  .f-name{
+    font-size:22px;
+  }
+  .footer-bottom{
+    flex-direction:column;
+    text-align:center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 3D Advanced Animation Canvas (Three.js) -->
+<canvas id="three-canvas"></canvas>
+
+<div class="mesh m1"></div>
+<div class="mesh m2"></div>
+<div class="mesh m3"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+      <div class="logo-text">VIJ<span>Downloader</span></div>
+    </a>
+    <div class="nav-live"><div class="ndot"></div> Live</div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow"><i class="fas fa-star"></i> 100% Free · No Signup · No Ads</div>
+  <h1>Download Any Video<br><em>Instantly.</em></h1>
+  <p class="hero-sub">YouTube, Instagram, TikTok, Facebook — sab ek jagah. Koi bhi link paste karo, seconds mein download lo.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">4+</div><div class="stat-l">Platforms</div></div>
+    <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Free</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">Signup</div></div>
+    <div class="stat"><div class="stat-n">Fast</div><div class="stat-l">Speed</div></div>
+  </div>
+  <div class="plat-row">
+    <div class="pb yt"><i class="fab fa-youtube"></i> YouTube</div>
+    <div class="pb ig"><i class="fab fa-instagram"></i> Instagram</div>
+    <div class="pb tk"><i class="fab fa-tiktok"></i> TikTok</div>
+    <div class="pb fb"><i class="fab fa-facebook"></i> Facebook</div>
+  </div>
+  <div class="dl-wrap">
+    <div class="dl-card">
+      <div class="tabs">
+        <button class="tab yt on" onclick="pick('yt',this)"><i class="fab fa-youtube"></i>YouTube</button>
+        <button class="tab ig"    onclick="pick('ig',this)"><i class="fab fa-instagram"></i>Instagram</button>
+        <button class="tab tk"    onclick="pick('tk',this)"><i class="fab fa-tiktok"></i>TikTok</button>
+        <button class="tab fb"    onclick="pick('fb',this)"><i class="fab fa-facebook"></i>Facebook</button>
+      </div>
+      <div class="irow">
+        <i class="iicon fas fa-link"></i>
+        <input id="url" type="url" placeholder="YouTube link yahan paste karein…" autocomplete="off" oninput="onChange()"/>
+        <button id="xbtn" onclick="clearIt()"><i class="fas fa-times"></i> Clear</button>
+      </div>
+      <div class="brow">
+        <button class="bpaste" onclick="doPaste()"><i class="fas fa-clipboard"></i> Paste</button>
+        <button class="bdl" onclick="doDownload()"><i class="fas fa-bolt"></i> Download Karo</button>
+      </div>
+    </div>
+    <div class="msg tip" id="tip"><i class="fas fa-circle-check"></i><span id="tipText"></span></div>
+    <div class="msg err" id="err"><i class="fas fa-circle-exclamation"></i><span id="errText"></span></div>
+  </div>
+</section>
+
+<!-- FOUNDER SECTION -->
+<section class="founder-sec reveal">
+  <div class="founder-card">
+    <div class="f-img-outer">
+      <div class="f-ring"></div>
+      <div class="f-ring-mask"></div>
+      <div class="f-img">
+        <img id="founderPhoto" src="https://res.cloudinary.com/ddlc9pfgn/image/upload/v1780227266/57b3c985-6692-4127-9f35-fe10a0ac492b_ikdwza.jpg" alt="Aman Kumar"/>
+      </div>
+    </div>
+    <div class="f-info">
+      <div class="f-tag"><i class="fas fa-crown"></i> Founder &amp; Creator</div>
+      <div class="f-name">Aman Kumar</div>
+      <p class="f-desc">VIJDownloader banaya taaki har koi — bina kisi technical knowledge ke — apne favorite videos aasani se save kar sake. Simple, fast, aur completely free.</p>
+      <div class="f-badges">
+        <div class="fbadge g1"><i class="fas fa-crown"></i> Lakeviya Official</div>
+        <div class="fbadge g2"><i class="fas fa-check-circle"></i> Verified Creator</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTERS -->
+<section class="ctr-sec reveal">
+  <div class="ctr-grid">
+    <div class="cc"><div class="cc-icon">🎬</div><div class="cc-num">10L+</div><div class="cc-lbl">Videos Downloaded</div></div>
+    <div class="cc"><div class="cc-icon">⚡</div><div class="cc-num">5 sec</div><div class="cc-lbl">Avg Download Time</div></div>
+    <div class="cc"><div class="cc-icon">🌐</div><div class="cc-num">4</div><div class="cc-lbl">Platforms</div></div>
+    <div class="cc"><div class="cc-icon">🔒</div><div class="cc-num">100%</div><div class="cc-lbl">Safe & Secure</div></div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps-sec reveal">
+  <div class="sec-eye">✦ Process</div>
+  <h2 class="sec-title">3 Steps Mein Download</h2>
+  <div class="steps-grid">
+    <div class="step"><div class="step-num">01</div><div class="step-icon">📋</div><h3>Platform Chunein</h3><p>YouTube, Instagram, TikTok ya Facebook — jo chahiye wo tab select karein.</p></div>
+    <div class="step"><div class="step-num">02</div><div class="step-icon">🔗</div><h3>Link Paste Karein</h3><p>Video copy karein, box mein paste karein. Auto-detect bhi karta hai!</p></div>
+    <div class="step"><div class="step-num">03</div><div class="step-icon">⬇️</div><h3>Download Hit Karo</h3><p>Download dabao — page khulega, wahan Save karo. Bas ho gaya! 🎉</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-sec reveal">
+  <div class="sec-eye">✦ FAQ</div>
+  <h2 class="sec-title" style="margin-bottom:28px;">Aksar Pooche Jaate Hain</h2>
+  <div class="fi"><div class="fq" onclick="faq(this)">Kya yeh bilkul free hai?<div class="fq-ico"><i class="fas fa-chevron-down"></i></div></div><div class="fa2">Haan! 100% free. Koi subscription, account, ya hidden fees nahi.</div></div>
+  <div class="fi"><div class="fq" onclick="faq(this)">Kaunse platforms support hain?<div class="fq-ico"><i class="fas fa-chevron-down"></i></div></div><div class="fa2">YouTube (videos, shorts), Instagram (Reels, Posts), TikTok, aur Facebook Videos.</div></div>
+  <div class="fi"><div class="fq" onclick="faq(this)">Mobile pe kaam karta hai?<div class="fq-ico"><i class="fas fa-chevron-down"></i></div></div><div class="fa2">Bilkul! Android, iPhone, tablet, laptop — har jagah perfectly kaam karta hai.</div></div>
+  <div class="fi"><div class="fq" onclick="faq(this)">Download nahi ho raha?<div class="fq-ico"><i class="fas fa-chevron-down"></i></div></div><div class="fa2">Sahi platform select karein, poori link paste karein. Jo page khule uspe "Download" dhundein.</div></div>
+  <div class="fi"><div class="fq" onclick="faq(this)">Video quality kya milegi?<div class="fq-ico"><i class="fas fa-chevron-down"></i></div></div><div class="fa2">HD, Full HD, aur 4K tak. Download page pe quality choose kar sakte hain.</div></div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <div class="li"><i class="fas fa-bolt"></i></div>
+          VIJ<span>Downloader</span>
+        </div>
+        <p class="footer-tagline">Aapka trusted free video downloader. Fast, safe, aur bilkul aasaan.</p>
+      </div>
+     <!-- <div class="flinks"><h4>Platforms</h4><ul><li><a href="#"><i class="fab fa-youtube" style="color:var(--yt);margin-right:6px">Instagram</i></a></li><li><a href="https://www.instagram.com/vijay__rao_____?igsh=d2YydGg0NWxleDZ6"><i class="fab fa-instagram" style="color:var(--ig);<margin-right:6px"></i>Youtube</a></li><li><a href="#"><i class="fab fa-tiktok" style="color:var(--tk);margin-right:6px"></i>TikTok</a></li><li><a href="#"><i class="fab fa-facebook" style="color:var(--fb);margin-right:6px"></i>Facebook</a></li></ul></div>-->
+      <div class="flinks"><h4>Links</h4><ul><li><a href="#">About</a></li><li><a href="#">How It Works</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+        <span>© 2026 VIJDownloader by <a href="https://www.instagram.com/aman.lakeviya?igsh=MXBra3V1ZjlucHRxeQ==&utm_source=ig_contact_invite">Aman Kumar</a>. All rights reserved.</span>
+        <span class="funding-badge"><i class="fas fa-gem" style="color:var(--gold);"></i> Funded by Lakeviya</span>
+      </div>
+      <span>Personal use ke liye. Copyright ka dhyan rakhein.</span>
+    </div>
+  </div>
+</footer>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+
+  const canvas = document.getElementById('three-canvas');
+  const scene = new THREE.Scene();
+  scene.background = null;
+  scene.fog = new THREE.FogExp2(0x05050d, 0.0015);
+  
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 0.5, 7);
+  camera.lookAt(0, 0, 0);
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x000000, 0);
+  
+  // Enhanced Lighting
+  const ambientLight = new THREE.AmbientLight(0x1a1a2e);
+  scene.add(ambientLight);
+  const mainLight = new THREE.DirectionalLight(0xd4a843, 1.2);
+  mainLight.position.set(2, 5, 3);
+  scene.add(mainLight);
+  const fillLight = new THREE.PointLight(0x4a6eff, 0.6);
+  fillLight.position.set(-2, 1, 4);
+  scene.add(fillLight);
+  const backLight = new THREE.PointLight(0xffaa44, 0.5);
+  backLight.position.set(0, 1, -4);
+  scene.add(backLight);
+  
+  // Main Attractive Object: Icosahedron with wireframe + glow
+  const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+  const coreMat = new THREE.MeshStandardMaterial({
+    color: 0xd4a843,
+    emissive: 0x552200,
+    emissiveIntensity: 0.35,
+    roughness: 0.25,
+    metalness: 0.85,
+    flatShading: false
+  });
+  const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+  scene.add(coreMesh);
+  
+  // Wireframe shell
+  const wireGeo = new THREE.IcosahedronGeometry(0.96, 0);
+  const wireMat = new THREE.MeshBasicMaterial({
+    color: 0xffdd88,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.4
+  });
+  const wireShell = new THREE.Mesh(wireGeo, wireMat);
+  scene.add(wireShell);
+  
+  // Floating glowing rings around core
+  const ringGeo = new THREE.TorusGeometry(1.25, 0.045, 64, 300);
+  const ringMat = new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0x442200, emissiveIntensity: 0.6 });
+  const ring1 = new THREE.Mesh(ringGeo, ringMat);
+  ring1.rotation.x = Math.PI / 2;
+  scene.add(ring1);
+  
+  const ring2 = new THREE.Mesh(ringGeo, ringMat);
+  ring2.rotation.z = Math.PI / 3;
+  ring2.rotation.x = Math.PI / 3;
+  scene.add(ring2);
+  
+  const ring3 = new THREE.Mesh(ringGeo, ringMat);
+  ring3.rotation.z = Math.PI / 1.5;
+  ring3.rotation.x = Math.PI / 4;
+  scene.add(ring3);
+  
+  // ========== ANIMATED "LAKEVIYA" TEXT with particles ==========
+  const createGoldTextTexture = (text) => {
+    const canvasTex = document.createElement('canvas');
+    canvasTex.width = 1024;
+    canvasTex.height = 256;
+    const ctxTex = canvasTex.getContext('2d');
+    ctxTex.fillStyle = 'rgba(0,0,0,0)';
+    ctxTex.fillRect(0, 0, canvasTex.width, canvasTex.height);
+    
+    // gradient text
+    const grad = ctxTex.createLinearGradient(0, canvasTex.height/2, canvasTex.width, canvasTex.height/2);
+    grad.addColorStop(0, '#f5cc6a');
+    grad.addColorStop(0.3, '#d4a843');
+    grad.addColorStop(0.7, '#ffdf80');
+    grad.addColorStop(1, '#c49030');
+    
+    ctxTex.font = `800 ${canvasTex.width * 0.12}px "Syne", "Space Grotesk", system-ui`;
+    ctxTex.textAlign = 'center';
+    ctxTex.textBaseline = 'middle';
+    ctxTex.shadowBlur = 0;
+    ctxTex.fillStyle = grad;
+    ctxTex.fillText(text, canvasTex.width/2, canvasTex.height/2);
+    
+    // outer glow
+    ctxTex.shadowBlur = 22;
+    ctxTex.shadowColor = '#ffaa44';
+    ctxTex.fillText(text, canvasTex.width/2, canvasTex.height/2);
+    
+    const texture = new THREE.CanvasTexture(canvasTex);
+    texture.needsUpdate = true;
+    return texture;
+  };
+  
+  const lakeTextTexture = createGoldTextTexture('LAKEVIYA');
+  const textMat = new THREE.MeshStandardMaterial({
+    map: lakeTextTexture,
+    transparent: true,
+    emissive: 0x442200,
+    emissiveIntensity: 0.5,
+    side: THREE.DoubleSide
+  });
+  
+  const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 1.5), textMat);
+  textPlane.position.set(0, -2.2, -3.2);
+  scene.add(textPlane);
+  
+  // Sparkle particles around text
+  const sparkleCount = 800;
+  const sparkleGeo = new THREE.BufferGeometry();
+  const sparklePos = new Float32Array(sparkleCount * 3);
+  for (let i = 0; i < sparkleCount; i++) {
+    sparklePos[i*3] = (Math.random() - 0.5) * 9;
+    sparklePos[i*3+1] = (Math.random() - 0.5) * 5 - 1.5;
+    sparklePos[i*3+2] = (Math.random() - 0.5) * 4 - 4;
+  }
+  sparkleGeo.setAttribute('position', new THREE.BufferAttribute(sparklePos, 3));
+  const sparkleMat = new THREE.PointsMaterial({ color: 0xffcc77, size: 0.04, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+  const sparkles = new THREE.Points(sparkleGeo, sparkleMat);
+  scene.add(sparkles);
+  
+  // Star particle field (deep)
+  const starCount = 1800;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    starPos[i*3] = (Math.random() - 0.5) * 200;
+    starPos[i*3+1] = (Math.random() - 0.5) * 100;
+    starPos[i*3+2] = (Math.random() - 0.5) * 120 - 50;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  const starMatPoints = new THREE.PointsMaterial({ color: 0xccaa77, size: 0.06, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+  const starsField = new THREE.Points(starGeo, starMatPoints);
+  scene.add(starsField);
+  
+  // Floating dust
+  const dustCount = 1500;
+  const dustGeoObj = new THREE.BufferGeometry();
+  const dustPosArray = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount; i++) {
+    dustPosArray[i*3] = (Math.random() - 0.5) * 35;
+    dustPosArray[i*3+1] = (Math.random() - 0.5) * 20;
+    dustPosArray[i*3+2] = (Math.random() - 0.5) * 25 - 10;
+  }
+  dustGeoObj.setAttribute('position', new THREE.BufferAttribute(dustPosArray, 3));
+  const dustMaterial = new THREE.PointsMaterial({ color: 0xaa8866, size: 0.025, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending });
+  const dustField = new THREE.Points(dustGeoObj, dustMaterial);
+  scene.add(dustField);
+  
+  let time = 0;
+  
+  function animate() {
+    requestAnimationFrame(animate);
+    time += 0.012;
+    
+    // Rotate core and wire
+    coreMesh.rotation.y = time * 0.5;
+    coreMesh.rotation.x = Math.sin(time * 0.3) * 0.2;
+    wireShell.rotation.y = coreMesh.rotation.y;
+    wireShell.rotation.x = coreMesh.rotation.x;
+    
+    // Rotate rings
+    ring1.rotation.z = time * 0.3;
+    ring2.rotation.x = time * 0.25;
+    ring2.rotation.y = time * 0.2;
+    ring3.rotation.z = time * 0.4;
+    ring3.rotation.x = time * 0.15;
+    
+    // Pulse emissive intensity
+    const intensity = 0.4 + Math.sin(time * 2.5) * 0.2;
+    coreMat.emissiveIntensity = intensity;
+    textMat.emissiveIntensity = 0.4 + Math.sin(time * 1.8) * 0.15;
+    
+    // Text floating
+    textPlane.position.z = -3.2 + Math.sin(time * 0.7) * 0.06;
+    textPlane.position.y = -2.2 + Math.sin(time * 0.9) * 0.04;
+    
+    // Rotate starfield slowly
+    starsField.rotation.y = time * 0.01;
+    dustField.rotation.x = time * 0.008;
+    sparkles.rotation.y = time * 0.02;
+    
+    // Subtle camera movement
+    camera.position.x += (0 - camera.position.x) * 0.02;
+    camera.position.y += (Math.sin(time * 0.2) * 0.05 - camera.position.y) * 0.03;
+    camera.lookAt(0, 0.2, 0);
+    
+    renderer.render(scene, camera);
+  }
+  
+  animate();
+  
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  
+  // Interactive mouse effect on core
+  document.addEventListener('mousemove', (e) => {
+    const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    const mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+    coreMesh.rotation.y += (mouseX * 0.5 - coreMesh.rotation.y) * 0.05;
+    coreMesh.rotation.x += (mouseY * 0.3 - coreMesh.rotation.x) * 0.05;
+  });
+</script>
+
+<script>
+  // Core download logic (unchanged)
+  const P={
+    yt:{label:"YouTube",ph:"https://www.youtube.com/watch?v=... ya youtu.be/...",url:v=>`https://app.ytdown.to/en23/?url=${encodeURIComponent(v)}`},
+    ig:{label:"Instagram",ph:"https://www.instagram.com/reel/...",url:v=>`https://fastdl.app/en?url=${encodeURIComponent(v)}`},
+    tk:{label:"TikTok",ph:"https://www.tiktok.com/@user/video/...",url:v=>`https://ssstik.io/in?url=${encodeURIComponent(v)}`},
+    fb:{label:"Facebook",ph:"https://www.facebook.com/watch?v=...",url:v=>`https://snapsave.app/?url=${encodeURIComponent(v)}`},
+  };
+  let cur='yt';
+
+  function pick(k,btn){
+    cur=k;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('url').placeholder=P[k].ph;
+    hideMessages();
+  }
+  function onChange(){
+    const v=document.getElementById('url').value.trim();
+    const xb=document.getElementById('xbtn');
+    xb.style.display=v?'flex':'none';
+    if(v.includes('youtube')||v.includes('youtu.be')) autoPick('yt');
+    else if(v.includes('instagram')) autoPick('ig');
+    else if(v.includes('tiktok')) autoPick('tk');
+    else if(v.includes('facebook')||v.includes('fb.watch')) autoPick('fb');
+  }
+  function autoPick(k){
+    cur=k;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    document.querySelector(`.tab.${k}`).classList.add('on');
+  }
+  function clearIt(){
+    document.getElementById('url').value='';
+    document.getElementById('xbtn').style.display='none';
+    hideMessages();
+  }
+  function hideMessages(){
+    document.getElementById('tip').style.display='none';
+    document.getElementById('err').style.display='none';
+  }
+  function showErr(m){
+    hideMessages();
+    document.getElementById('errText').textContent=m;
+    document.getElementById('err').style.display='flex';
+  }
+  function showTip(m){
+    hideMessages();
+    document.getElementById('tipText').textContent=m;
+    document.getElementById('tip').style.display='flex';
+  }
+  async function doPaste(){
+    try{
+      const text=await navigator.clipboard.readText();
+      document.getElementById('url').value=text;
+      onChange();
+      showTip("Link paste ho gaya ✅");
+    }catch(e){
+      document.getElementById('url').focus();
+      showErr("Press & hold karein → Paste select karein");
+    }
+  }
+  function doDownload(){
+    const v=document.getElementById('url').value.trim();
+    hideMessages();
+    if(!v){showErr('Pehle video ka link paste karein!');return;}
+    if(!v.startsWith('http')){showErr('Poori link chahiye — https:// se shuru honi chahiye.');return;}
+    showTip(`${P[cur].label} download page khul raha hai… wahan "Download" button dabayein ✅`);
+    setTimeout(()=>window.open(P[cur].url(v),'_blank'),300);
+  }
+  document.getElementById('url').addEventListener('keydown',e=>{if(e.key==='Enter')doDownload();});
+
+  function faq(el){
+    const fi=el.closest('.fi'),wasOpen=fi.classList.contains('open');
+    document.querySelectorAll('.fi').forEach(f=>f.classList.remove('open'));
+    if(!wasOpen) fi.classList.add('open');
+  }
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible');});
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
