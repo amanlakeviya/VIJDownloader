@@ -1,5 +1,8 @@
 ## Screenshots
 ![VIJ Downloader](https://raw.githubusercontent.com/amanlakeviya/VIJDownloader/main/IMG_9984.jpeg)
+## Live Demo
+[Add website link](https://amanlakeviya.github.io/VIJDownloader/)
+
 # Video Downloader Web Page
 A modern web application that allows users to download videos from multiple social media platforms.
 ## Features
@@ -15,8 +18,7 @@ A modern web application that allows users to download videos from multiple soci
 - CSS
 - JavaScript
 
-## Live Demo
-[Add website link](https://amanlakeviya.github.io/VIJDownloader/)
+
 ## Future Improvements
 - Batch Downloads
 - Audio Extraction
