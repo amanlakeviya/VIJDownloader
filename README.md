@@ -16,7 +16,8 @@ A modern web application that allows users to download videos from multiple soci
 - JavaScript
 
 ## Screenshots
-(Add screenshots here)
+
+![VIJ Downloader](https://raw.githubusercontent.com/amanlakeviya/VIJDownloader/main/IMG_9984.jpeg)
 
 ## Live Demo
 (Add website link)
