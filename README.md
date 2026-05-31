@@ -1,7 +1,7 @@
-# Video Downloader Web App
-
+## Screenshots
+![VIJ Downloader](https://raw.githubusercontent.com/amanlakeviya/VIJDownloader/main/IMG_9984.jpeg)
+# Video Downloader Web Page
 A modern web application that allows users to download videos from multiple social media platforms.
-
 ## Features
 - Instagram Reel Download
 - YouTube Video Download
@@ -14,10 +14,6 @@ A modern web application that allows users to download videos from multiple soci
 - HTML
 - CSS
 - JavaScript
-
-## Screenshots
-
-![VIJ Downloader](https://raw.githubusercontent.com/amanlakeviya/VIJDownloader/main/IMG_9984.jpeg)
 
 ## Live Demo
 (Add website link)
